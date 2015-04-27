@@ -26,7 +26,7 @@ $consulta = $pdo->prepare("SELECT DISTINCT g.gen_nome
 $consulta->execute();
 if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
     foreach($linhas as $linha) {
-        $generos[$linha["gen_nome"]] = 3;
+        $generos[$linha["gen_nome"]] = 1;
     }
 }
 
@@ -36,7 +36,7 @@ $consulta = $pdo->prepare("SELECT DISTINCT t.tag_nome
 $consulta->execute();
 if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
     foreach($linhas as $linha) {
-        $tags[$linha["tag_nome"]] = 3;
+        $tags[$linha["tag_nome"]] = 1;
     }
 }
 
@@ -46,7 +46,7 @@ if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
 
 
 //TAGS
-$consulta = $pdo->prepare("SELECT DISTINCT j.pk_tagslivros_cod, t.tag_nome, c.like_pontos
+$consulta = $pdo->prepare("SELECT DISTINCT l.pk_livro_cod, j.pk_tagslivros_cod, t.tag_nome, c.like_pontos
                            FROM tb_likes c
                            INNER JOIN tb_livros l ON c.fk_livro_cod = l.pk_livro_cod
                            INNER JOIN tb_tagslivros j ON l.pk_livro_cod = j.fk_livro_cod
@@ -55,10 +55,12 @@ $consulta = $pdo->prepare("SELECT DISTINCT j.pk_tagslivros_cod, t.tag_nome, c.li
 $consulta->bindValue(":usu_cod", $usuario->getId());
 $consulta->execute();
 if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
-    
-    foreach($linhas as $linha) {
-        $temp_name = $linha["tag_nome"];
-        $temp_pts = ($tags[$temp_name] + $linha["like_pontos"]) / 2;
+    $books_tags = $linhas;
+}
+if($books_tags != false) {
+    foreach($books_tags as $book_tag) {
+        $temp_name = $book_tag["tag_nome"];
+        $temp_pts = ($tags[$temp_name] + $book_tag["like_pontos"]) / 2;
         
         $tags[$temp_name] = $temp_pts;
     }
@@ -69,7 +71,7 @@ if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
 
 
 //GENERO
-$consulta = $pdo->prepare("SELECT DISTINCT l.livro_nome, c.like_pontos, g.gen_nome
+$consulta = $pdo->prepare("SELECT DISTINCT 1 AS recpoints, l.pk_livro_cod, l.livro_nome, c.like_pontos, g.gen_nome
                            FROM tb_likes c
                            INNER JOIN tb_livros l ON c.fk_livro_cod = l.pk_livro_cod
                            INNER JOIN tb_generos g ON l.fk_gen_cod = g.pk_gen_cod
@@ -122,9 +124,6 @@ foreach($tags as $tag_key => $tag_value) {
 echo "<br><br><br>";
 
 
-
-
-
 ?>
 
 
@@ -153,15 +152,8 @@ if($books != false) {
 ?>
         Nome do livro: <?php echo $book['livro_nome'] ?> - 
         <?php echo $book['like_pontos'] ?> - 
-        <?php echo $book['gen_nome'] ?> - 
-        <?php
-        foreach($generos as $tag) {
-            echo $gen_key;
-            echo " => ";
-            echo $gen_value;
-            echo "<br>";
-        }
-        ?><br>
+        <?php echo $book['recpoints'] ?> - 
+        <?php echo $book['gen_nome'] ?><br>
 <?php  
     }
 }
@@ -169,7 +161,74 @@ if($books != false) {
 
 
 
+<h1>Recomendações </h1>
+<?php
 
+/////////////////////////////////////////////////////////////////////////////
+///////////// GERAR A RECOMENDAÇÃO //////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+function similaridade($atributoNovo, $atributoBanco, $peso){
+    $valor = $peso*(($atributoNovo - $atributoBanco)*($atributoNovo - $atributoBanco));
+    $valor =  sqrt($valor);
+    return $valor;
+}
+
+
+//GENERO
+$consulta = $pdo->prepare("SELECT DISTINCT 1 AS recpoints, l.pk_livro_cod, l.livro_nome, g.gen_nome
+                           FROM tb_livros l
+                           INNER JOIN tb_generos g ON l.fk_gen_cod = g.pk_gen_cod
+                           ORDER BY l.livro_nome ASC;");
+//Executa o sql
+$consulta->execute();
+
+if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
+    //Trabalhar com os resultados
+    $recbooks = $linhas;
+} else {
+    $recbooks = false;
+}
+
+if($recbooks != false) {
+    foreach($recbooks as $recbook) {
+        $gen_pts = similaridade(3, $generos[$recbook["gen_nome"]], 2);
+        $tag_pts = 0;
+        $div_count = 0;
+            
+        foreach($books_tags as $book_tag) {
+            if($book_tag["pk_livro_cod"] == $recbook["pk_livro_cod"]) {                
+                $temp = similaridade(3, $tags[$book_tag["tag_nome"]], 3);
+                $tag_pts += $temp;
+                $div_count += 1;
+            }
+        }
+        
+        if($div_count > 0) {
+            $tag_pts = $tag_pts / $div_count;
+        }
+            
+        $total_pts = ($gen_pts + $tag_pts) / 2;
+        echo $recbook["livro_nome"] . " - Possui similaridade com voce de: " . "<br>" . $total_pts . "<br><br>";
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+
+?>
 
 
 
