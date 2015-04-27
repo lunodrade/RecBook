@@ -1,4 +1,4 @@
-<?php  include '../_header.php';  ?>
+<?php  include '../header.php';  ?>
 
 <?php 
 
@@ -32,7 +32,9 @@ if($dados = $consulta->fetch(PDO::FETCH_ASSOC)) {
         $usuario->setEmail($dados['usu_email']);
         $usuario->setSenha($dados['usu_senha']);
         $usuario->setTipo($dados['usu_tipo']);
-        $usuario->setCliente($dados['fk_cli_cod']);
+        $usuario->setNome($dados['usu_nome']);
+        $usuario->setSexo($dados['usu_sexo']);
+        $usuario->setIdade($dados['usu_idade']);
 
         $sess = Sessao::instanciar();
         $sess->set('usuario', $usuario);
@@ -98,8 +100,7 @@ if($dados = $consulta->fetch(PDO::FETCH_ASSOC)) {
 
 
 </div>
-          
-	<script type="text/javascript" src="assets/js/bootstrap-datepicker.js"></script>
+
 	<script type="text/javascript">
         jQuery(document).ready(function($) {
             
@@ -107,4 +108,4 @@ if($dados = $consulta->fetch(PDO::FETCH_ASSOC)) {
     </script>
           
           
-<?php  include '../_footer.php';  ?>
+<?php  include '../footer.php';  ?>

@@ -5,19 +5,18 @@
     $pdo = new PDO("mysql:host=".DBHOST.";dbname=".DBNAME."", DBUSER, DBPASS);
     $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-    $consulta = $pdo->prepare("SELECT DISTINCT c.cli_nome, u.usu_email, u.usu_senha
-                              FROM tb_usuarios u
-                              JOIN tb_clientes c ON c.pk_cli_cod = u.fk_cli_cod
-                              WHERE u.pk_usu_cod = :usu_cod;");
+    $consulta = $pdo->prepare("SELECT usu_nome, usu_email, usu_senha
+                              FROM tb_usuarios
+                              WHERE pk_usu_cod = :usu_cod;");
 
     $consulta->bindValue(":usu_cod", $_GET['user']);
 
     $consulta->execute();
         
     if($linha = $consulta->fetch(PDO::FETCH_ASSOC)) {
-        echo $linha['cli_nome'];
+        echo $linha['usu_nome'];
 
-        $usuario = $linha['cli_nome'];
+        $usuario = $linha['usu_nome'];
         $destinatario = $linha['usu_email'];
         
         $sess = Sessao::instanciar();

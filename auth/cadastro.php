@@ -15,64 +15,40 @@ class Cadastro extends ConfigController {
                 $pdo = $this->conn;
 
                 //Prepara o query, usando :values
-                $query = $pdo->prepare("INSERT INTO tb_clientes
-                                        (cli_nome, cli_sobr, cli_sexo, cli_tel, cli_nasc, cli_rg, cli_cpf)
+                $query = $pdo->prepare("INSERT INTO tb_usuarios
+                                        (usu_email, usu_senha, usu_tipo, usu_conf, usu_hash, usu_nome, usu_sexo, usu_idade) 
                                         VALUES
-                                        (:nome, :sobr, :sexo, :tel, :nasc, :rg, :cpf);");
+                                        (:email, :senha, :tipo, :conf, :hash, :nome, :sexo, :idade);");
 
                 //Troca os :symbol pelos valores que irão executar
                 //Ao mesmo tempo protege esses valores de injection
-                $query->bindValue(":nome",  $_POST["nome"]);
-                $query->bindValue(":sobr",  $_POST["sobrenome"]);
-                $query->bindValue(":sexo",  $_POST["sexo"]);
-                $query->bindValue(":tel",   $_POST["telefone"]);
-                $query->bindValue(":nasc",  $_POST["datanasc"]);
-                $query->bindValue(":rg",    $_POST["rg"]);
-                $query->bindValue(":cpf",   $_POST["cpf"]);
-                
-                if ($query->execute()) {
-                    
-                    //Pega o ID do último cliente inserido  
-                    $clienteID = $pdo->lastInsertId();
+                $query->bindValue(":email",     $_POST["email"]);
+                $query->bindValue(":senha",     $_POST["senha"]);
+                $query->bindValue(":tipo",      "user");
+                $query->bindValue(":conf",      false);
+                $query->bindValue(":hash",      "");
+                $query->bindValue(":nome",      $_POST["nome"]);
+                $query->bindValue(":sexo",      $_POST["sexo"]);
+                $query->bindValue(":idade",     $_POST["idade"]);
 
-                    //Prepara o query, usando :values
-                    $query = $pdo->prepare("INSERT INTO tb_usuarios
-                                            (usu_email, usu_senha, usu_tipo, fk_cli_cod, usu_conf, usu_hash)
-                                            VALUES
-                                            (:email, :senha, :tipo, :fk_cod, :conf, :hash);");
+                //Executar o sql
+                if($query->execute()) {
 
-                    //Troca os :symbol pelos valores que irão executar
-                    //Ao mesmo tempo protege esses valores de injection
-                    $query->bindValue(":email",     $_POST["email"]);
-                    $query->bindValue(":senha",     $_POST["senha"]);
-                    $query->bindValue(":tipo",      "user");
-                    $query->bindValue(":fk_cod",    $clienteID);
-                    $query->bindValue(":conf",      false);
-                    $query->bindValue(":hash",      "");
-                    
-                    //Executar o sql
-                    if($query->execute()) {
-                        
-                        //A query foi executada com sucesso
-                        $usuarioID = $pdo->lastInsertId();
-                        
-                        // Enviar pra página que manda o email de confirmação do cadastro
-                        header("Location: " . URL . '/auth/sendmail_confirmation.php?user=' . $usuarioID);
-                    } else {
-                        
-                        //Erro ao inserir usuário
-                        echo "erro - usuario \n";
-                        die();
-                    }
+                    //A query foi executada com sucesso
+                    $usuarioID = $pdo->lastInsertId();
+
+                    // Enviar pra página que manda o email de confirmação do cadastro
+                    header("Location: " . URL . '/auth/sendmail_confirmation.php?user=' . $usuarioID);
                 } else {
-                    
-                    //Erro ao inserir cliente
-                    echo "erro - cliente \n";
+
+                    //Erro ao inserir usuário
+                    echo "erro - usuario \n";
                     die();
                 }
 			}
 		} catch (Exception $e) {
 			if(DEBUG){
+				echo 'Erro ao cadastrar registro!!!! \n<br>';
 				echo $e->getMessage();
 			} else {
 				echo 'Erro ao cadastrar registro! \n';
