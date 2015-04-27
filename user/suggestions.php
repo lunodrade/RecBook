@@ -26,7 +26,7 @@ $consulta = $pdo->prepare("SELECT DISTINCT g.gen_nome
 $consulta->execute();
 if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
     foreach($linhas as $linha) {
-        $generos[$linha["gen_nome"]] = 1;
+        $generos[$linha["gen_nome"]] = 3;
     }
 }
 
@@ -36,7 +36,7 @@ $consulta = $pdo->prepare("SELECT DISTINCT t.tag_nome
 $consulta->execute();
 if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
     foreach($linhas as $linha) {
-        $tags[$linha["tag_nome"]] = 1;
+        $tags[$linha["tag_nome"]] = 3;
     }
 }
 
@@ -172,9 +172,47 @@ function similaridade($atributoNovo, $atributoBanco, $peso){
     $valor =  sqrt($valor);
     return $valor;
 }
+function make_comparer() {
+    // Normalize criteria up front so that the comparer finds everything tidy
+    $criteria = func_get_args();
+    foreach ($criteria as $index => $criterion) {
+        $criteria[$index] = is_array($criterion)
+            ? array_pad($criterion, 3, null)
+            : array($criterion, SORT_ASC, null);
+    }
+
+    return function($first, $second) use (&$criteria) {
+        foreach ($criteria as $criterion) {
+            // How will we compare this round?
+            list($column, $sortOrder, $projection) = $criterion;
+            $sortOrder = $sortOrder === SORT_DESC ? -1 : 1;
+
+            // If a projection was defined project the values now
+            if ($projection) {
+                $lhs = call_user_func($projection, $first[$column]);
+                $rhs = call_user_func($projection, $second[$column]);
+            }
+            else {
+                $lhs = $first[$column];
+                $rhs = $second[$column];
+            }
+
+            // Do the actual comparison; do not return if equal
+            if ($lhs < $rhs) {
+                return -1 * $sortOrder;
+            }
+            else if ($lhs > $rhs) {
+                return 1 * $sortOrder;
+            }
+        }
+
+        return 0; // tiebreakers exhausted, so $first == $second
+    };
+}
+//////////////////////////////////////////////////////////////////////////////////////
 
 
-//GENERO
+//TODOS LIVROS NA BASE DE DADOS
 $consulta = $pdo->prepare("SELECT DISTINCT 1 AS recpoints, l.pk_livro_cod, l.livro_nome, g.gen_nome
                            FROM tb_livros l
                            INNER JOIN tb_generos g ON l.fk_gen_cod = g.pk_gen_cod
@@ -189,18 +227,20 @@ if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
     $recbooks = false;
 }
 
+$booksPtsArray = array();
+
 if($recbooks != false) {
     foreach($recbooks as $recbook) {
-        $gen_pts = similaridade(3, $generos[$recbook["gen_nome"]], 2);
+        $gen_pts = similaridade(5, $generos[$recbook["gen_nome"]], 2);
         $tag_pts = 0;
         $div_count = 0;
             
         foreach($books_tags as $book_tag) {
             if($book_tag["pk_livro_cod"] == $recbook["pk_livro_cod"]) {                
-                $temp = similaridade(3, $tags[$book_tag["tag_nome"]], 3);
+                $temp = similaridade(5, $tags[$book_tag["tag_nome"]], 3);
                 $tag_pts += $temp;
-                $div_count += 1;
             }
+            $div_count += 1;
         }
         
         if($div_count > 0) {
@@ -208,10 +248,27 @@ if($recbooks != false) {
         }
             
         $total_pts = ($gen_pts + $tag_pts) / 2;
-        echo $recbook["livro_nome"] . " - Possui similaridade com voce de: " . "<br>" . $total_pts . "<br><br>";
+        //$recbook["recpoints"] = $total_pts;
+        
+        $tempArray = array("recpoints" => $total_pts, "livro_nome" => $recbook["livro_nome"], "pk_livro_cod" => $recbook["pk_livro_cod"]);
+        $booksPtsArray[count($booksPtsArray)] = $tempArray;
+        //echo $recbook["livro_nome"] . " - Possui similaridade com voce de: " . "<br>" . $recbook["recpoints"] . "<br><br>";
+        
     }
 }
 
+usort($booksPtsArray, make_comparer('recpoints'));
+
+//foreach($booksPtsArray as $bookPts) {
+if(count($booksPtsArray) > 10) {
+    $size = 10;
+} else {
+    $size = count($booksPtsArray);
+}
+for($i = 0; $i < $size; $i++) {
+    $bookPts = $booksPtsArray[$i];
+    echo $bookPts["livro_nome"] . " - Possui similaridade com voce de: " . "<br>" . $bookPts["recpoints"] . "<br><br>";
+}
 
 
 
