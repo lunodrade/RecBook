@@ -15,10 +15,10 @@ if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
 
 
 
-<h1>Pagina do usuario, com os livros </h1>
+<h1>Pagina para lista e adicionar os livros </h1>
+<a href="<?php echo URL ?>/user/index.php">voltar</a><br>
 
-<a href="<?php echo URL ?>/user/add_books.php">Adicionar livros</a><br>
-<a href="<?php echo URL ?>/user/suggestions.php">Ver sugestões</a><br>
+
 
 
 <?php  include '../footer.php';  ?>
