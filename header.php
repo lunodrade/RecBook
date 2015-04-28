@@ -30,7 +30,27 @@ if ($aut->esta_logado()) {
     
     <style type="text/css">
         .especialista {
-            margin-left: 50px;
+            margin-left: 150px;
+        }
+        
+        .outer-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .outer-container-templ {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .navbar-options {
+            margin: 50px 0 120px 0;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        body {
+            background-color: #E0E0E0;
         }
     </style>
     
@@ -38,7 +58,7 @@ if ($aut->esta_logado()) {
   <body>
     
     
-    
+    <div class="outer-container navbar-options">
     Ol&aacute;, 
     <?php 
         if($usuario != null) {
@@ -48,26 +68,28 @@ if ($aut->esta_logado()) {
         }
         if($usuario != null) {
     ?>
-            <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/logout.php">sair</a>)</span>
+            <span class="goLoginBtn">&nbsp;(<a href="<?php echo URL ?>/auth/logout.php">sair</a>)</span>
     <?php 
             if($usuario->getTipo() == "admin") {
     ?>
     
-                <span class="especialista">(<a href="<?php echo URL ?>/admin">Especialista</a>)</span>
+                <span class="especialista"><a href="<?php echo URL ?>/admin">Especialista</a></span>
     <?php
             }
         } else { 
     ?>
-            <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/login.php">logar</a>)</span>
+            <span class="goLoginBtn">&nbsp;(<a href="<?php echo URL ?>/auth/login.php">logar</a>)</span>
     <?php 
         } 
         
     ?>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    <div class="outer-container-templ">

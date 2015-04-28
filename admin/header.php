@@ -26,3 +26,20 @@ if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
 	require_once __ROOT__ . '/auth/perm_admin.php';
 }
 ?>
+
+<style>
+    a:hover {
+      color: #005580;
+      text-decoration: none !important;
+    }
+</style>
+
+<h2 style="
+    color: white;
+    position: absolute;
+    z-index: 50;
+    padding: 2px 0 0 65px;
+">
+    <a href="<?php echo URL ?>/">&lt;&lt; Página inicial</a>
+    
+</h2>

@@ -80,8 +80,19 @@ if(isset($_POST) && !empty($_POST)) {
 
 ?>
           
-<h2>Ok, livro avaliado com sucesso, s&oacute; clicar em voltar.</h2>
-<a href="<?php echo URL ?>/user/add_books.php">voltar</a><br>
+    <style type="text/css">
+        .outer-container-templ {
+            display: block;
+        }
+    </style>
+
+<div class="outer-container">
+    <div class="inner-container">
+        <a href="<?php echo URL ?>/user/add_books.php#<?php echo $_POST["book"] ?>">voltar</a><br>
+        <h1>Livro avaliado!</h1>
+        <p>Clique em voltar e continue avaliando os outros livros que conhece...</p>
+    </div>
+</div>
 
           
 <?php  include '../footer.php';  ?>

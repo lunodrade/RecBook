@@ -83,7 +83,7 @@ if($set_redirect) {
       </form>
 
     <br><br>
-    <a href="signup.php">Ainda n&atilde;o &eacute; cadastrado?</a>
+    <a href="signup.php" style="margin-left: 50px;">Ainda n&atilde;o &eacute; cadastrado?</a>
 
 
 

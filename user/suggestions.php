@@ -16,15 +16,18 @@ if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
 
 
 
+    <style type="text/css">
+        .outer-container-templ {
+/*            display: block;*/
+        }
+    </style>
 
-<h1>Pagina para ver as sugest&otilde;es </h1>
-<a href="<?php echo URL ?>/user/index.php">voltar</a><br>
+    <div class="inner-container">
+        <a href="<?php echo URL ?>/user/index.php">voltar</a><br>
+        <h1>Sugerimos que voc&ecirc; leia esses livros</h1>
+        <p>Dica: deixe o mouse sobre o nome do livro para ver a proximidade dele com vo&ccedil;&ecirc; &#59;&nbsp;&#41;</p>
 <br>
 <br>
-<br>
-<br>
-<br>
-
 
 <?php
     
@@ -124,7 +127,7 @@ if($books != false) {
 
 
 
-
+/*
 foreach($generos as $gen_key => $gen_value) {
     echo $gen_key;
     echo " => ";
@@ -140,7 +143,7 @@ foreach($tags as $tag_key => $tag_value) {
     echo "<br>";
 }
 echo "<br><br><br>";
-
+*/
 
 ?>
 
@@ -160,23 +163,21 @@ echo "<br><br><br>";
 
 
 <?php
-if($books != false) {
-    foreach($books as $book) {
+//if($books != false) {
+//    foreach($books as $book) {
 ?>
-        Nome do livro: <?php echo $book['livro_nome'] ?> - 
-        <?php echo $book['like_pontos'] ?> - 
-        <?php echo $book['recpoints'] ?> - 
-        <?php echo $book['gen_nome'] ?><br>
+<!--
+        Nome do livro: <?php //echo $book['livro_nome'] ?> - 
+        <?php //echo $book['like_pontos'] ?> - 
+        <?php //echo $book['recpoints'] ?> - 
+        <?php //echo $book['gen_nome'] ?><br>
+-->
 <?php  
-    }
-}
+//    }
+//}
 ?>  
 
-
-
-<h1>Recomenda&ccedil;&otilde;es </h1>
 <?php
-
 /////////////////////////////////////////////////////////////////////////////
 ///////////// GERAR A RECOMENDAÇÃO //////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -294,9 +295,13 @@ if(count($booksPtsArray) > 10) {
 }
 for($i = 0; $i < $size; $i++) {
     $bookPts = $booksPtsArray[$i];
-    echo $bookPts["livro_nome"] . " - Possui similaridade com voce de: " . "<br>" . $bookPts["recpoints"] . "<br><br>";
+//    echo "<h3>" . $bookPts["livro_nome"] . "</h3>";
+    echo "<h3><a target='_blank' href='http://encontre.saraiva.com.br/?q=" . rawurlencode(utf8_encode($bookPts["livro_nome"])) . "' ";
+    echo "title='Possui proximidade com voce de: " . $bookPts["recpoints"] . " pontos.'";
+    echo ">" . $bookPts["livro_nome"] . "</a>";
+    echo "</h3>";
+//    echo $bookPts["livro_nome"] . "<br>Possui similaridade com voce de: " . $bookPts["recpoints"] . " pontos.<br><br>";
 }
-
 
 
 
@@ -314,10 +319,7 @@ for($i = 0; $i < $size; $i++) {
 
 ?>
 
-
-
-
-
+</div>
 
 
 

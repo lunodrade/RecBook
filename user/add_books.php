@@ -64,84 +64,140 @@ function getTags($livro_cod) {
 
 ?>
 
+    <style type="text/css">
+        .outer-container-templ {
+            display: block;
+        }
+        .flex-container {
+          padding: 0;
+          margin: 10px;
+          list-style: none;
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          -webkit-flex-flow: row wrap;
+          justify-content: center;
+        }
 
+        .flex-item {
+          background: rgba(255, 101, 73, .5);
+          padding: 25px 5px;
+          width: 400px;
+          height: 250px;
+          margin: 10px;
+          color: white;
+          font-weight: bold;
+          text-align: center;
+        }
 
-<h1>Pagina para lista e adicionar os livros </h1>
-<a href="<?php echo URL ?>/user/index.php">voltar</a><br>
+        .flex-item:hover {
+          background: rgb(255, 124, 100);
+        }
+        
+        .teste {
+            margin-left: -10px;
+            margin-top: -20px;
+              width: inherit;
+              text-align: right;
+            padding-bottom: 20px;
+        }
+        
+        .teste > button {
+            
+        }
+        
+        .teste-select {  
+              background-color: rgba(250,250,250,.5);
+            padding-left: 15px;
+  height: 33px;
+  color: black;
+  width: 70px;
+  display: inline-block !important;
+  border-radius: 5px;
+  display: inline-block !important;
+        }
+        
+        .title-item {
+            font-size: 18px;
+            color: rgb(65, 65, 65);
+        }
+        
+        .label-item {
+            color: rgb(216, 210, 210);
+        }
+        
+        .btn-info {
+            background-color: rgba(91, 192, 222, 0.63);
+            border-color: rgba(70, 184, 218, 0.71);
+        }
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+    </style>
+
+<div class="outer-container">
+    <div class="inner-container">
+        <a href="<?php echo URL ?>/user/index.php">voltar</a><br>
+        <h1>Avalie os livros que j&aacute; leu</h1>
+        <p>Importante: avalie apenas os que leu, indiferente de se gostou ou n&atilde;o.</p>
+    </div>
+</div>
 <br>
 <br>
 <br>
 
-
+<ul class="flex-container">
 <?php
 $books = getBooks();
 if($books != false) {
     foreach($books as $book) {
 ?>
-        Nome do livro: <?php echo $book['livro_nome'] ?><br>
-        Resumo: <?php echo $book['livro_desc'] ?><br>
-        G&ecirc;nero: <?php echo $book['gen_nome'] ?><br>
-        Tags: 
-        
-        <?php
-        $tags = getTags($book["pk_livro_cod"]);
-        if($tags) { 
-            foreach($tags as $tag) {
-        ?>
-                <?php echo $tag['tag_nome'] ?>;
-        <?php  
-            }
-        }
-        ?>  
-        <br>
-        
-        
-        
-        <form id="ratingForm<?php echo $book["pk_livro_cod"] ?>" class="form-horizontal" role="form" action="save_rating.php" method="post">
-        
-        
-        <div class="form-group">
-            <label for="rating" class="col-md-1 control-label">Avalie</label>
-            <div class="col-md-2">
-                <select name="rating" class="form-control">
-                    <option value=""></option>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+<li class="flex-item" id="<?php echo $book["pk_livro_cod"] ?>">
+                    <div class="teste">
+                    <form id="ratingForm<?php echo $book["pk_livro_cod"] ?>" class="form-horizontal" role="form" action="save_rating.php" method="post">
+                       <select required class="teste-select" name="rating" class="form-control">
+                        <option value=""></option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
 
-                </select> 
-            </div>
+                        </select> 
+                        <input type="hidden" name="book" value="<?php echo $book["pk_livro_cod"] ?>">
+                        <button id="btn-signup" type="submit" class="btn btn-info">
+                        <i class="icon-hand-right"></i> &nbsp; Votar</button>
 
-            <input type="hidden" name="book" value="<?php echo $book["pk_livro_cod"] ?>">
-            <button id="btn-signup" type="submit" class="btn btn-info">
-            <i class="icon-hand-right"></i> &nbsp; Votar</button>
-        </div>
-        </form>
-        <br>
-        
-        
-        
-        
-        <br>
-        <br>
-        <br>
+                    </form>
+                    </div>
+                    <span class="title-item"><?php echo $book['livro_nome'] ?></span><br><br>
+                    <span class="label-item">Resumo:</span> <?php echo $book['livro_desc'] ?><br><br>
+                    <span class="label-item">G&ecirc;nero:</span> <?php echo $book['gen_nome'] ?>.<br>
+                    <span class="label-item">Tags:</span> 
 
+                    <?php
+                    $tags = getTags($book["pk_livro_cod"]);
+                    if($tags) { 
+                        foreach($tags as $tag) {
+                    ?>
+                            <?php echo $tag['tag_nome'] ?>;
+                    <?php  
+                        }
+                    }
+                    ?>  
+                    
+                    
+                    
+                    
+                    
+                    
+</li>
 <?php  
     }
 }
 ?>
-
+</ul>
 
 
 

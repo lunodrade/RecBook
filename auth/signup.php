@@ -5,10 +5,10 @@
 
 <style type="text/css">
     .inner.cover {
-        border: 2px solid rgba(25, 25, 25, .6);
-        box-shadow: 0px 5px 20px 0px rgba(25, 25, 25, 0.60);
-        padding: 5% 10% 5% 10%;
-        background-color: rgba(25, 25, 25, 0.60)
+          border: 2px solid rgba(125, 125, 125, .2);
+          box-shadow: 0px 5px 20px 0px rgba(25, 25, 25, 0.60);
+          padding: 5% 10% 5% 10%;
+          background-color: rgba(125, 125, 125, 0.20);
     }
     input {
         height: 3em;
@@ -17,6 +17,7 @@
         margin-bottom: 8%;
     }
     #btn-signup {
+        margin-left: 120px;
         margin-top: 5%;
     }
     .form-control:focus {
@@ -30,6 +31,11 @@
         color: black;
     }
     
+    .title-post {
+          margin-left: 60px;
+          margin-bottom: 50px;
+    }
+    
     /* CSS de campos válidos e inválidos pelo pattern */
     input:invalid   { background-color: white; color: red; }
     
@@ -38,7 +44,7 @@
 
 <div class="inner cover">
    
-    <h1>Crie uma conta</h1>
+    <h1 class="title-post">Crie uma conta</h1>
     
     
     

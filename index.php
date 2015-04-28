@@ -3,10 +3,11 @@
     <style type="text/css">
 
     </style>
-
          
-    <h1>pagina inicial para deslogado</h1>
-    
+    <div class="inner-container">
+        <h1>Bem-vindo ao RecBooks,</h1>
+        <h1>suas melhores recomenda&ccedil;&otilde;es em livros &#59;&nbsp;&#41;</h1>
+    </div>
     <?php
         if ($aut->esta_logado()) {
             header('Location: '.URL.'/user/index.php');
