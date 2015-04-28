@@ -29,6 +29,9 @@ if ($aut->esta_logado()) {
     <link href="<?php echo ASSETS ?>/css/bootstrap.min.css" rel="stylesheet">
     
     <style type="text/css">
+        .especialista {
+            margin-left: 50px;
+        }
     </style>
     
   </head>
@@ -48,7 +51,13 @@ if ($aut->esta_logado()) {
             <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/logout.php">sair</a>)</span>
     <?php } else { ?>
             <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/login.php">logar</a>)</span>
-    <?php } ?>
+    <?php } 
+        if($usuario->getTipo() == "admin") {
+    ?>
+            <span class="especialista">(<a href="<?php echo URL ?>/admin">Especialista</a>)</span>
+    <?php
+        }
+    ?>
     <br>
     <br>
     <br>
