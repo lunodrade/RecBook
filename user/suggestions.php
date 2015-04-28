@@ -17,7 +17,7 @@ if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
 
 
 
-<h1>Pagina para ver as sugestões </h1>
+<h1>Pagina para ver as sugest&otilde;es </h1>
 <a href="<?php echo URL ?>/user/index.php">voltar</a><br>
 <br>
 <br>
@@ -72,6 +72,8 @@ $consulta->bindValue(":usu_cod", $usuario->getId());
 $consulta->execute();
 if ($linhas = $consulta->fetchAll(PDO::FETCH_ASSOC)) {
     $books_tags = $linhas;
+} else {
+    $books_tags = false;
 }
 if($books_tags != false) {
     foreach($books_tags as $book_tag) {
@@ -172,7 +174,7 @@ if($books != false) {
 
 
 
-<h1>Recomendações </h1>
+<h1>Recomenda&ccedil;&otilde;es </h1>
 <?php
 
 /////////////////////////////////////////////////////////////////////////////
@@ -220,6 +222,17 @@ function make_comparer() {
         return 0; // tiebreakers exhausted, so $first == $second
     };
 }
+function subInclude($string, $arrayMulti) {
+    if($arrayMulti != false) {
+        foreach($arrayMulti as $array) {
+            if($array["pk_livro_cod"] == $string) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
+}
 //////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -246,12 +259,14 @@ if($recbooks != false) {
         $tag_pts = 0;
         $div_count = 0;
             
-        foreach($books_tags as $book_tag) {
-            if($book_tag["pk_livro_cod"] == $recbook["pk_livro_cod"]) {                
-                $temp = similaridade(5, $tags[$book_tag["tag_nome"]], 3);
-                $tag_pts += $temp;
+        if($books_tags != false) {
+            foreach($books_tags as $book_tag) {
+                if($book_tag["pk_livro_cod"] == $recbook["pk_livro_cod"]) {                
+                    $temp = similaridade(5, $tags[$book_tag["tag_nome"]], 3);
+                    $tag_pts += $temp;
+                }
+                $div_count += 1;
             }
-            $div_count += 1;
         }
         
         if($div_count > 0) {
@@ -259,11 +274,12 @@ if($recbooks != false) {
         }
             
         $total_pts = ($gen_pts + $tag_pts) / 2;
-        //$recbook["recpoints"] = $total_pts;
         
-        $tempArray = array("recpoints" => $total_pts, "livro_nome" => $recbook["livro_nome"], "pk_livro_cod" => $recbook["pk_livro_cod"]);
-        $booksPtsArray[count($booksPtsArray)] = $tempArray;
-        //echo $recbook["livro_nome"] . " - Possui similaridade com voce de: " . "<br>" . $recbook["recpoints"] . "<br><br>";
+        if (!subInclude($recbook["pk_livro_cod"], $books)) {
+            $tempArray = array("recpoints" => $total_pts, "livro_nome" => $recbook["livro_nome"], "pk_livro_cod" => $recbook["pk_livro_cod"]);
+            $booksPtsArray[count($booksPtsArray)] = $tempArray;
+        }
+        
         
     }
 }

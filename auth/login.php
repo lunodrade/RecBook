@@ -67,7 +67,7 @@ if($set_redirect) {
    
    
    
-    <h1>Faça o seu login</h1>
+    <h1>Fa&ccedil;a o seu login</h1>
 
       <form action="controle.php" method="post" class="form-signin" role="form">
         <label for="inputEmail" class="sr-only">Email</label>

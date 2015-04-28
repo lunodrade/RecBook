@@ -8,7 +8,7 @@
    <br>
    <br>
    
-    rodapé <br>
+    rodap&eacute; <br>
     
   
     <script type="text/javascript">

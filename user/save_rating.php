@@ -80,7 +80,7 @@ if(isset($_POST) && !empty($_POST)) {
 
 ?>
           
-<h2>Ok, livro avaliado com sucesso, só clicar em voltar.</h2>
+<h2>Ok, livro avaliado com sucesso, s&oacute; clicar em voltar.</h2>
 <a href="<?php echo URL ?>/user/add_books.php">voltar</a><br>
 
           
