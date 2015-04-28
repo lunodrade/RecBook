@@ -12,6 +12,22 @@ if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
     require_once __ROOT__ . '/auth/perm_user.php';
 }
 
+?>
+
+
+
+
+<h1>Pagina para ver as sugestões </h1>
+<a href="<?php echo URL ?>/user/index.php">voltar</a><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<?php
+    
 //Conectar no banco
 $pdo = new PDO("mysql:host=".DBHOST.";dbname=".DBNAME."", DBUSER, DBPASS);
 $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
@@ -125,11 +141,6 @@ echo "<br><br><br>";
 
 
 ?>
-
-
-
-<h1>Pagina para ver as sugestões </h1>
-<a href="<?php echo URL ?>/user/index.php">voltar</a><br>
 
 
 <?php

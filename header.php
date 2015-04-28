@@ -49,14 +49,19 @@ if ($aut->esta_logado()) {
         if($usuario != null) {
     ?>
             <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/logout.php">sair</a>)</span>
-    <?php } else { ?>
-            <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/login.php">logar</a>)</span>
-    <?php } 
-        if($usuario->getTipo() == "admin") {
+    <?php 
+            if($usuario->getTipo() == "admin") {
     ?>
-            <span class="especialista">(<a href="<?php echo URL ?>/admin">Especialista</a>)</span>
+    
+                <span class="especialista">(<a href="<?php echo URL ?>/admin">Especialista</a>)</span>
     <?php
-        }
+            }
+        } else { 
+    ?>
+            <span class="goLoginBtn">(<a href="<?php echo URL ?>/auth/login.php">logar</a>)</span>
+    <?php 
+        } 
+        
     ?>
     <br>
     <br>
